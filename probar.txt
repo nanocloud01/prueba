@@ -1,0 +1,71 @@
+API REST CRUD - Producto
+Estructura del Proyecto
+prueba/
+├── pom.xml
+└── src/main/
+    ├── java/com/example/demo/
+    │   ├── DemoApplication.java
+    │   ├── controller/ProductoController.java
+    │   ├── service/ProductoService.java
+    │   ├── repository/ProductoRepository.java
+    │   ├── entity/Producto.java
+    │   ├── dto/
+    │   │   ├── ProductoRequestDTO.java
+    │   │   └── ProductoResponseDTO.java
+    │   └── exception/
+    │       ├── ResourceNotFoundException.java
+    │       └── GlobalExceptionHandler.java
+    └── resources/
+        ├── application.properties
+        └── data.sql
+Endpoints
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | /api/productos | Listar todos |
+| GET | /api/productos/{id} | Obtener por ID |
+| POST | /api/productos | Crear producto |
+| PUT | /api/productos/{id} | Actualizar producto |
+| DELETE | /api/productos/{id} | Eliminar producto |
+| GET | /api/productos/paginado?page=0&size=10 | Paginación |
+Ejemplos de Requests
+POST - Crear producto
+curl -X POST http://localhost:8080/api/productos \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Mouse Gamer","descripcion":"Mouse RGB","precio":49.99,"stock":100}'
+PUT - Actualizar producto
+curl -X PUT http://localhost:8080/api/productos/1 \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Laptop Actualizada","precio":1499.99}'
+DELETE - Eliminar producto
+curl -X DELETE http://localhost:8080/api/productos/1
+Respuestas de Error
+404 - No encontrado
+{
+  timestamp: 2026-02-17T10:42:23.6350222,
+  status: 404,
+  error: Not Found,
+  message: Producto no encontrado con ID: 999,
+  details: uri=/api/productos/999
+}
+400 - Validación fallida
+{
+  timestamp: 2026-02-17T10:42:23.6505945,
+  status: 400,
+  error: Bad Request,
+  message: Error de validación en los campos,
+  validationErrors: {
+    precio: El precio debe ser mayor que cero,
+    stock: El stock no puede ser negativo,
+    nombre: El nombre debe tener entre 2 y 100 caracteres
+  }
+}
+Tecnologías
+- Java 21
+- Spring Boot 3.3.5
+- Spring Data JPA
+- H2 Database (en memoria)
+- Jakarta Validation
+Ejecutar
+cd C:\proys\new\prueba
+mvn spring-boot:run
+La aplicación corre en http://localhost:8080. Consola H2: http://localhost:8080/h2-console
