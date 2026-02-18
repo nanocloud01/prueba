@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repositorio para la entidad Producto.
@@ -29,7 +30,7 @@ import java.util.Optional;
  *         a los parámetros del método del repositorio.
  */
 @Repository
-public interface ProductoRepository extends JpaRepository<Producto, Long> {
+public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Busca productos por nombre que contengan el texto especificado (ignorando mayúsculas).
@@ -73,7 +74,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
      * @param id Identificador del producto
      * @return Optional con el producto si existe y está activo, vacío si no
      */
-    Optional<Producto> findByIdAndActivoTrue(Long id);
+    Optional<Producto> findByIdAndActivoTrue(UUID id);
 
     /**
      * Consulta JPQL personalizada para buscar productos con bajo stock.

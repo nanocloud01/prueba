@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +32,9 @@ public class ProductoService {
     }
 
     @Transactional(readOnly = true)
-    public ProductoResponseDTO obtenerPorId(Long id) {
-        Producto producto = productoRepository.findById(id)
+    public ProductoResponseDTO obtenerPorId(String id) {
+        UUID uuid = UUID.fromString(id);
+        Producto producto = productoRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Producto no encontrado con ID: " + id));
         
@@ -53,8 +55,9 @@ public class ProductoService {
     }
 
     @Transactional
-    public ProductoResponseDTO actualizar(Long id, ProductoRequestDTO requestDTO) {
-        Producto producto = productoRepository.findById(id)
+    public ProductoResponseDTO actualizar(String id, ProductoRequestDTO requestDTO) {
+        UUID uuid = UUID.fromString(id);
+        Producto producto = productoRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Producto no encontrado con ID: " + id));
 
@@ -74,17 +77,18 @@ public class ProductoService {
             producto.setActivo(requestDTO.getActivo());
         }
 
-        Producto productoActualizado = productoRepository.save(producto);
+        Producto productoActualizado = productoRepository.saveAndFlush(producto);
         return convertirAResponseDTO(productoActualizado);
     }
 
     @Transactional
-    public void eliminar(Long id) {
-        if (!productoRepository.existsById(id)) {
+    public void eliminar(String id) {
+        UUID uuid = UUID.fromString(id);
+        if (!productoRepository.existsById(uuid)) {
             throw new ResourceNotFoundException(
                     "Producto no encontrado con ID: " + id);
         }
-        productoRepository.deleteById(id);
+        productoRepository.deleteById(uuid);
     }
 
     @Transactional(readOnly = true)
@@ -101,7 +105,7 @@ public class ProductoService {
 
     private ProductoResponseDTO convertirAResponseDTO(Producto producto) {
         ProductoResponseDTO dto = new ProductoResponseDTO();
-        dto.setId(producto.getId());
+        dto.setId(producto.getId() != null ? producto.getId().toString() : null);
         dto.setNombre(producto.getNombre());
         dto.setDescripcion(producto.getDescripcion());
         dto.setPrecio(producto.getPrecio());
