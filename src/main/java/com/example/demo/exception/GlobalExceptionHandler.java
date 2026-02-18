@@ -16,9 +16,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> manejarResourceNotFound(
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(
             ResourceNotFoundException ex, WebRequest request) {
-        
+
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
@@ -30,9 +30,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> manejarValidacion(
+    public ResponseEntity<ErrorResponse> handleValidation(
             MethodArgumentNotValidException ex, WebRequest request) {
-        
+
         Map<String, String> errores = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String nombreCampo = ((FieldError) error).getField();
@@ -52,9 +52,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> manejarExcepcionGeneral(
+    public ResponseEntity<ErrorResponse> handleGeneralException(
             Exception ex, WebRequest request) {
-        
+
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -63,34 +63,5 @@ public class GlobalExceptionHandler {
         errorResponse.setDetails(request.getDescription(false));
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    public static class ErrorResponse {
-        private LocalDateTime timestamp;
-        private int status;
-        private String error;
-        private String message;
-        private String details;
-        private Map<String, String> validationErrors;
-
-        public LocalDateTime getTimestamp() { return timestamp; }
-        public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
-        
-        public int getStatus() { return status; }
-        public void setStatus(int status) { this.status = status; }
-        
-        public String getError() { return error; }
-        public void setError(String error) { this.error = error; }
-        
-        public String getMessage() { return message; }
-        public void setMessage(String message) { this.message = message; }
-        
-        public String getDetails() { return details; }
-        public void setDetails(String details) { this.details = details; }
-        
-        public Map<String, String> getValidationErrors() { return validationErrors; }
-        public void setValidationErrors(Map<String, String> validationErrors) { 
-            this.validationErrors = validationErrors; 
-        }
     }
 }

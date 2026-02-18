@@ -14,30 +14,29 @@ import java.util.UUID;
 
 /**
  * Repositorio para la entidad Producto.
- * 
+ * <p>
  * Esta interfaz extiende JpaRepository que proporciona métodos CRUD básicos:
  * - save(), findById(), findAll(), deleteById(), count(), etc.
- * 
+ * <p>
  * Además, definimos métodos de consulta personalizados usando:
  * - Spring Data JPA Query Methods (nombres de métodos)
  * - @Query para JPQL personalizado
- * 
+ *
  * @Repository: Anotación estereotípica que indica que esta clase es un componente
- *              de acceso a datos. También activa la traducción excepciones
- *              específicas de de JDBC a excepciones de Spring.
- * 
+ * de acceso a datos. También activa la traducción excepciones
+ * específicas de de JDBC a excepciones de Spring.
  * @Param: Se usa para vincular parámetros de métodos de consulta JPQL
- *         a los parámetros del método del repositorio.
+ * a los parámetros del método del repositorio.
  */
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Busca productos por nombre que contengan el texto especificado (ignorando mayúsculas).
-     * 
+     * <p>
      * Spring Data JPA interpreta automáticamente este nombre de método:
      * "findBy" + "Nombre" + "Containing" = WHERE nombre LIKE %?%
-     * 
+     *
      * @param nombre Texto a buscar en el nombre
      * @return Lista de productos que contienen el nombre
      */
@@ -45,7 +44,7 @@ public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Busca productos activos (where activo = true).
-     * 
+     *
      * @return Lista de productos activos
      */
     List<Producto> findByActivoTrue();
@@ -53,7 +52,7 @@ public interface ProductoRepository extends JpaRepository<Producto, UUID> {
     /**
      * Busca productos con stock menor al umbral especificado.
      * Útil para identificar productos con bajo inventario.
-     * 
+     *
      * @param stock Umbral de stock
      * @return Lista de productos con stock menor al umbral
      */
@@ -61,7 +60,7 @@ public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Busca productos por rango de precio.
-     * 
+     *
      * @param precioMin Precio mínimo
      * @param precioMax Precio máximo
      * @return Lista de productos en el rango de precio
@@ -70,7 +69,7 @@ public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Busca un producto activo por su ID.
-     * 
+     *
      * @param id Identificador del producto
      * @return Optional con el producto si existe y está activo, vacío si no
      */
@@ -78,12 +77,12 @@ public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Consulta JPQL personalizada para buscar productos con bajo stock.
-     * 
+     * <p>
      * Esta consulta es más flexible que los query methods y permite:
      * - Usar JPQL en lugar de SQL puro
      * - Definir consultas complejas
      * - Optimizar el rendimiento
-     * 
+     *
      * @param umbralStock Cantidad mínima para considerar "bajo stock"
      * @return Lista de productos con stock menor al umbral
      */
@@ -92,7 +91,7 @@ public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Consulta JPQL para contar productos activos.
-     * 
+     *
      * @return Número de productos activos
      */
     @Query("SELECT COUNT(p) FROM Producto p WHERE p.activo = true")
@@ -100,17 +99,17 @@ public interface ProductoRepository extends JpaRepository<Producto, UUID> {
 
     /**
      * Página de productos con paginación y filtro opcional por nombre.
-     * 
+     * <p>
      * Pageable es una interfaz de Spring Data que encapsula:
      * - page: número de página (0-based)
      * - size: tamaño de página
      * - sort: criterios de ordenamiento
-     * 
-     * @param nombre Filtro opcional por nombre (ignora mayúsculas/minúsculas)
+     *
+     * @param nombre   Filtro opcional por nombre (ignora mayúsculas/minúsculas)
      * @param pageable Configuración de paginación
      * @return Página de productos que coinciden con el filtro
      */
     @Query("SELECT p FROM Producto p WHERE " +
-           "(:nombre IS NULL OR LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')))")
+            "(:nombre IS NULL OR LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')))")
     Page<Producto> buscarConFiltros(@Param("nombre") String nombre, Pageable pageable);
 }

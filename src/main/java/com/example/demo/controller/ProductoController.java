@@ -63,10 +63,10 @@ public class ProductoController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
-        
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
         Page<ProductoResponseDTO> productosPage = productoService.obtenerConPaginacion(pageable);
-        
+
         return ResponseEntity.ok(productosPage);
     }
 
@@ -75,10 +75,10 @@ public class ProductoController {
             @RequestParam(required = false) String nombre,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         Page<ProductoResponseDTO> productosPage = productoService.buscarConFiltros(nombre, pageable);
-        
+
         return ResponseEntity.ok(productosPage);
     }
 }

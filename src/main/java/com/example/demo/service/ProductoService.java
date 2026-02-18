@@ -37,18 +37,18 @@ public class ProductoService {
         Producto producto = productoRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Producto no encontrado con ID: " + id));
-        
+
         return convertirAResponseDTO(producto);
     }
 
     @Transactional
     public ProductoResponseDTO crear(ProductoRequestDTO requestDTO) {
         Producto producto = new Producto();
-        producto.setNombre(requestDTO.getNombre());
-        producto.setDescripcion(requestDTO.getDescripcion());
-        producto.setPrecio(requestDTO.getPrecio());
-        producto.setStock(requestDTO.getStock());
-        producto.setActivo(requestDTO.getActivo() != null ? requestDTO.getActivo() : true);
+        producto.setNombre(requestDTO.nombre());
+        producto.setDescripcion(requestDTO.descripcion());
+        producto.setPrecio(requestDTO.precio());
+        producto.setStock(requestDTO.stock());
+        producto.setActivo(requestDTO.activo() != null ? requestDTO.activo() : true);
 
         Producto productoGuardado = productoRepository.save(producto);
         return convertirAResponseDTO(productoGuardado);
@@ -61,20 +61,20 @@ public class ProductoService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Producto no encontrado con ID: " + id));
 
-        if (requestDTO.getNombre() != null) {
-            producto.setNombre(requestDTO.getNombre());
+        if (requestDTO.nombre() != null) {
+            producto.setNombre(requestDTO.nombre());
         }
-        if (requestDTO.getDescripcion() != null) {
-            producto.setDescripcion(requestDTO.getDescripcion());
+        if (requestDTO.descripcion() != null) {
+            producto.setDescripcion(requestDTO.descripcion());
         }
-        if (requestDTO.getPrecio() != null) {
-            producto.setPrecio(requestDTO.getPrecio());
+        if (requestDTO.precio() != null) {
+            producto.setPrecio(requestDTO.precio());
         }
-        if (requestDTO.getStock() != null) {
-            producto.setStock(requestDTO.getStock());
+        if (requestDTO.stock() != null) {
+            producto.setStock(requestDTO.stock());
         }
-        if (requestDTO.getActivo() != null) {
-            producto.setActivo(requestDTO.getActivo());
+        if (requestDTO.activo() != null) {
+            producto.setActivo(requestDTO.activo());
         }
 
         Producto productoActualizado = productoRepository.saveAndFlush(producto);
@@ -104,15 +104,15 @@ public class ProductoService {
     }
 
     private ProductoResponseDTO convertirAResponseDTO(Producto producto) {
-        ProductoResponseDTO dto = new ProductoResponseDTO();
-        dto.setId(producto.getId() != null ? producto.getId().toString() : null);
-        dto.setNombre(producto.getNombre());
-        dto.setDescripcion(producto.getDescripcion());
-        dto.setPrecio(producto.getPrecio());
-        dto.setStock(producto.getStock());
-        dto.setActivo(producto.getActivo());
-        dto.setFechaCreacion(producto.getFechaCreacion());
-        dto.setFechaActualizacion(producto.getFechaActualizacion());
-        return dto;
+        return new ProductoResponseDTO(
+            producto.getId() != null ? producto.getId().toString() : null,
+            producto.getNombre(),
+            producto.getDescripcion(),
+            producto.getPrecio(),
+            producto.getStock(),
+            producto.getActivo(),
+            producto.getFechaCreacion(),
+            producto.getFechaActualizacion()
+        );
     }
 }
