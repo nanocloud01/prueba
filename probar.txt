@@ -69,3 +69,13 @@ Ejecutar
 cd C:\proys\new\prueba
 mvn spring-boot:run
 La aplicación corre en http://localhost:8080. Consola H2: http://localhost:8080/h2-console
+
+
+
+docker compose up -d
+docker ps
+psql -h localhost -U myuser -d mydatabase
+psql -h IP_DEL_SERVIDOR -U myuser -d mydatabase
+
+-- para habilitar uuid_v4
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
