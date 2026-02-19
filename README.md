@@ -8,7 +8,7 @@ API RESTful desarrollada con Spring Boot para la gestión de productos.
 - Paginación de resultados
 - Búsqueda con filtros por nombre
 - Validación de datos
-- Base de datos en memoria (H2)
+- Base de datos Postgres
 - Identificadores UUID
 
 ## Tecnologías
@@ -16,7 +16,7 @@ API RESTful desarrollada con Spring Boot para la gestión de productos.
 - Java 21
 - Spring Boot 3.3.5
 - Spring Data JPA
-- H2 Database
+- Postgres Database
 - Maven
 
 ## Estructura del Proyecto
@@ -123,6 +123,6 @@ curl "http://localhost:8080/api/productos/buscar?nombre=laptop&page=0&size=10"
 
 ## Notas
 
-- La base de datos H2 se crea automáticamente al iniciar la aplicación
+- La base de datos Postgres se crea automáticamente al iniciar la aplicación
 - Los IDs ahora son UUID en lugar de números secuenciales
 - La API acepta solicitudes desde cualquier origen (CORS habilitado)

@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.example.demo.core.exception;
 
 import java.time.LocalDateTime;
 import java.util.Map;

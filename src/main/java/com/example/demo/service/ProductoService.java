@@ -3,7 +3,8 @@ package com.example.demo.service;
 import com.example.demo.dto.ProductoRequestDTO;
 import com.example.demo.dto.ProductoResponseDTO;
 import com.example.demo.entity.Producto;
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.core.exception.ResourceNotFoundException;
+import com.example.demo.mapper.ProductoMapper;
 import com.example.demo.repository.ProductoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,23 +13,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductoService {
 
     private final ProductoRepository productoRepository;
+    private final ProductoMapper productoMapper;
 
-    public ProductoService(ProductoRepository productoRepository) {
+    public ProductoService(ProductoRepository productoRepository, ProductoMapper productoMapper) {
         this.productoRepository = productoRepository;
+        this.productoMapper = productoMapper;
     }
 
     @Transactional(readOnly = true)
     public List<ProductoResponseDTO> obtenerTodos() {
         return productoRepository.findAll()
                 .stream()
-                .map(this::convertirAResponseDTO)
-                .collect(Collectors.toList());
+                .map(productoMapper::toResponseDTO)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -38,20 +40,16 @@ public class ProductoService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Producto no encontrado con ID: " + id));
 
-        return convertirAResponseDTO(producto);
+        return productoMapper.toResponseDTO(producto);
     }
 
     @Transactional
     public ProductoResponseDTO crear(ProductoRequestDTO requestDTO) {
-        Producto producto = new Producto();
-        producto.setNombre(requestDTO.nombre());
-        producto.setDescripcion(requestDTO.descripcion());
-        producto.setPrecio(requestDTO.precio());
-        producto.setStock(requestDTO.stock());
+        Producto producto = productoMapper.toEntity(requestDTO);
         producto.setActivo(requestDTO.activo() != null ? requestDTO.activo() : true);
 
         Producto productoGuardado = productoRepository.save(producto);
-        return convertirAResponseDTO(productoGuardado);
+        return productoMapper.toResponseDTO(productoGuardado);
     }
 
     @Transactional
@@ -78,7 +76,7 @@ public class ProductoService {
         }
 
         Producto productoActualizado = productoRepository.saveAndFlush(producto);
-        return convertirAResponseDTO(productoActualizado);
+        return productoMapper.toResponseDTO(productoActualizado);
     }
 
     @Transactional
@@ -94,25 +92,12 @@ public class ProductoService {
     @Transactional(readOnly = true)
     public Page<ProductoResponseDTO> obtenerConPaginacion(Pageable pageable) {
         return productoRepository.findAll(pageable)
-                .map(this::convertirAResponseDTO);
+                .map(productoMapper::toResponseDTO);
     }
 
     @Transactional(readOnly = true)
     public Page<ProductoResponseDTO> buscarConFiltros(String nombre, Pageable pageable) {
         return productoRepository.buscarConFiltros(nombre, pageable)
-                .map(this::convertirAResponseDTO);
-    }
-
-    private ProductoResponseDTO convertirAResponseDTO(Producto producto) {
-        return new ProductoResponseDTO(
-            producto.getId() != null ? producto.getId().toString() : null,
-            producto.getNombre(),
-            producto.getDescripcion(),
-            producto.getPrecio(),
-            producto.getStock(),
-            producto.getActivo(),
-            producto.getFechaCreacion(),
-            producto.getFechaActualizacion()
-        );
+                .map(productoMapper::toResponseDTO);
     }
 }

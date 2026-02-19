@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.core.response.PageSigep;
 import com.example.demo.dto.ProductoRequestDTO;
 import com.example.demo.dto.ProductoResponseDTO;
+import com.example.demo.core.response.PageResponse;
 import com.example.demo.service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -71,14 +73,19 @@ public class ProductoController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<Page<ProductoResponseDTO>> buscarConFiltros(
+    public ResponseEntity<PageResponse<ProductoResponseDTO>> buscarConFiltros(
             @RequestParam(required = false) String nombre,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-        Page<ProductoResponseDTO> productosPage = productoService.buscarConFiltros(nombre, pageable);
 
-        return ResponseEntity.ok(productosPage);
+//        return ResponseEntity.ok(
+//                PageResponse.of(
+//                        productoService.buscarConFiltros(nombre, pageable)
+//                )
+//        );
+
+        return PageSigep.ok(productoService.buscarConFiltros(nombre, pageable));
     }
 }
