@@ -79,13 +79,6 @@ public class ProductoController {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-
-//        return ResponseEntity.ok(
-//                PageResponse.of(
-//                        productoService.buscarConFiltros(nombre, pageable)
-//                )
-//        );
-
         return PageSigep.ok(productoService.buscarConFiltros(nombre, pageable));
     }
 }
